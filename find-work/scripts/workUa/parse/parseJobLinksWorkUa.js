@@ -4,6 +4,8 @@ const { scrollDown, getJobLinks, nextPage } = require('../../../helpers');
 const { spamScriptWorkUa } = require('../spam/spamScriptWorkUa');
 
 async function parseJobLinksWorkUa(links, index) {
+  const jobLinksSelector =
+    '#pjax-jobs-list > .card-search div.add-bottom > h2 > a';
   if (index >= links.length) {
     console.log('All links processed.');
     let lastData = JSON.parse(fs.readFileSync('searchResultWorkUa.json'));
@@ -28,13 +30,13 @@ async function parseJobLinksWorkUa(links, index) {
   const pages = await page.$$('ul.pagination.text-center > li');
   pages.shift();
 
-  let vacancies = await getJobLinks(page);
+  let vacancies = await getJobLinks(page, jobLinksSelector);
 
   for (let i = 0; i < pages.length; i++) {
     await nextPage(filteredJobsLink, page);
     await scrollDown(page);
 
-    let nextVacancies = await getJobLinks(page);
+    let nextVacancies = await getJobLinks(page, jobLinksSelector);
     vacancies = vacancies.concat(nextVacancies);
   }
 

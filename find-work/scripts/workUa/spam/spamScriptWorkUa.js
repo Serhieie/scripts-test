@@ -5,7 +5,7 @@ const letters = require('../../../letters/letters.json');
 const { sleep } = require('../../../utils');
 const {
   checkVacancyWorkUa,
-  isAppliedVacanciesExist,
+  isDocumentExsist,
   checkVacancyWorkUaBack,
   checkVacancyBadConditions,
 } = require('../../../helpers');
@@ -13,8 +13,19 @@ const {
 //node ./scripts/workUa/spam/spam.js
 
 async function spamScriptWorkUa(links) {
+  const mainVacancySelector =
+    '#center > div > div.row.row-print > div.col-md-8 > div.card.card-spell-wrapper > div:nth-child(2)';
+  const createApplySelector =
+    'div > div > div > div > div > div.pull-left > div > div > a';
+  const choseCVSelector =
+    '#savedresume > div:nth-child(2) > div:nth-child(3) > label';
+  const letterCheckBoxSelector =
+    '#commonresume > div:nth-child(1) > div > label';
+  const letterTextAriaSelector = '#addtext';
+  const applyButtonSelector = '#submitbtn';
+
   let linksArray = links.slice();
-  let appliedVac = await isAppliedVacanciesExist(sended);
+  let appliedVac = await isDocumentExsist(sended, 'appliedVacancies.json');
 
   const browser = await puppeteer.launch({
     headless: false,
@@ -31,14 +42,9 @@ async function spamScriptWorkUa(links) {
 
       await sleep(random);
 
-      await page.waitForSelector(
-        'div > div > div > div > div > div.pull-left > div > div > a',
-        { visible: true }
-      );
+      await page.waitForSelector(createApplySelector, { visible: true });
       await page.waitForSelector('body');
 
-      const mainVacancySelector =
-        '#center > div > div.row.row-print > div.col-md-8 > div.card.card-spell-wrapper > div:nth-child(2)';
       const conditions = await checkVacancyWorkUa(page, mainVacancySelector);
       const backend = await checkVacancyWorkUaBack(page, mainVacancySelector);
       const badConditions = await checkVacancyBadConditions(
@@ -47,27 +53,20 @@ async function spamScriptWorkUa(links) {
       );
 
       if ((conditions && !badConditions) || (backend && !badConditions)) {
-        await page.click(
-          'div > div > div > div > div > div.pull-left > div > div > a'
-        );
+        await page.click(createApplySelector);
         await sleep(random);
 
-        await page.waitForSelector(
-          '#savedresume > div:nth-child(2) > div:nth-child(3) > label',
-          { visible: true }
-        );
-        await page.click(
-          '#savedresume > div:nth-child(2) > div:nth-child(3) > label'
-        );
-        await page.click('#commonresume > div:nth-child(1) > div > label');
+        await page.waitForSelector(choseCVSelector, { visible: true });
+        await page.click(choseCVSelector);
+        await page.click(letterCheckBoxSelector);
 
         const letter = letters.fullStackLetter;
 
-        await page.type('#addtext', letter);
+        await page.type(letterTextAriaSelector, letter);
 
         await sleep(random);
-        await page.waitForSelector('#submitbtn', { visible: true });
-        await page.click('#submitbtn');
+        await page.waitForSelector(applyButtonSelector, { visible: true });
+        await page.click(applyButtonSelector);
         await sleep(random);
         appliedVac.push(linksArray[i]);
 

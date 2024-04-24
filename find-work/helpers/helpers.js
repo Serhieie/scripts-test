@@ -20,24 +20,9 @@ async function scrollDown(page) {
   });
 }
 
-async function getJobLinks(page) {
+async function getJobLinks(page, selector) {
   let jobs = await page.evaluate(() =>
-    Array.from(
-      document.querySelectorAll(
-        '#pjax-jobs-list > .card-search div.add-bottom > h2 > a'
-      )
-    ).map(a => a.href)
-  );
-  return jobs;
-}
-
-async function getJobLinksRabotaUa(page) {
-  let jobs = await page.evaluate(() =>
-    Array.from(
-      document.querySelectorAll(
-        'alliance-jobseeker-desktop-vacancies-list > div > div > alliance-vacancy-card-desktop > a'
-      )
-    ).map(a => a.href)
+    Array.from(document.querySelectorAll(selector)).map(a => a.href)
   );
   return jobs;
 }
@@ -134,7 +119,7 @@ async function checkVacancyBadConditions(page, sel) {
   return await checkVacancyConditions(page, sel, searchTerms, false);
 }
 
-async function isSearchResultExist(searchResult) {
+async function isDocumentExsist(searchResult, docName) {
   const links = Object.values(searchResult);
   let linksArray = links.slice();
 
@@ -143,26 +128,11 @@ async function isSearchResultExist(searchResult) {
       const data = fs.readFileSync(searchResult, 'utf8');
       linksArray = JSON.parse(data);
     } catch (err) {
-      console.error('Error reading searchResult.json:', err);
+      console.error(`Error reading ${docName}:`, err);
     }
   }
 
   return linksArray;
-}
-
-async function isAppliedVacanciesExist(sended) {
-  const applied = Object.values(sended);
-  let appliedVac = applied.slice();
-
-  if (fs.existsSync(sended)) {
-    try {
-      const data = fs.readFileSync(sended, 'utf8');
-      appliedVac = JSON.parse(data);
-    } catch (err) {
-      console.error('Error reading appliedVacancies.json:', err);
-    }
-  }
-  return appliedVac;
 }
 
 module.exports = {
@@ -170,9 +140,8 @@ module.exports = {
   getJobLinks,
   nextPage,
   checkVacancyWorkUa,
-  isAppliedVacanciesExist,
-  isSearchResultExist,
-  getJobLinksRabotaUa,
+  getJobLinks,
+  isDocumentExsist,
   checkVacancyRabotaUa,
   checkVacancyWorkUaBack,
   checkVacancyRabotaUaBack,

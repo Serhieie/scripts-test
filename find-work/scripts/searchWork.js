@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
-const { scrollDown, getJobLinksRabotaUa } = require('../helpers');
+const { scrollDown, getJobLinks } = require('../helpers');
 const { parseJobLinksWorkUa } = require('./workUa');
 const { spamScriptRabotaUA } = require('./robotaUa');
 
@@ -28,6 +28,9 @@ parseJobLinksRabotaUa(jobLinks, 0)
   });
 
 async function parseJobLinksRabotaUa(links, index) {
+  const jobLinkSelector =
+    'alliance-jobseeker-desktop-vacancies-list > div > div > alliance-vacancy-card-desktop > a';
+
   if (index >= links.length) {
     console.log('Parsing completed.');
     let lastData = JSON.parse(fs.readFileSync('searchResultRobotaUa.json'));
@@ -53,12 +56,12 @@ async function parseJobLinksRabotaUa(links, index) {
   const pages = await page.$$('santa-pagination-with-links > div > a');
   pages.shift();
 
-  let vacancies = await getJobLinksRabotaUa(page);
+  let vacancies = await getJobLinks(page, jobLinkSelector);
 
   for (const page of pages) {
     await page.click();
     await scrollDown(page);
-    let nextVacancies = await getJobLinksRabotaUa(page);
+    let nextVacancies = await getJobLinks(page, jobLinkSelector);
     vacancies = vacancies.concat(nextVacancies);
   }
 

@@ -4,15 +4,25 @@ const sended = require('../../../appliedVacancies.json');
 const letters = require('../../../letters/letters.json');
 const {
   checkVacancyRabotaUa,
-  isAppliedVacanciesExist,
+  isDocumentExsist,
   checkVacancyRabotaUaBack,
   checkVacancyBadConditions,
 } = require('../../../helpers');
 const { sleep } = require('../../../utils');
 
 async function spamScriptRabotaUA(lastData) {
+  const mainVacancySelector =
+    'alliance-jobseeker-vacancy-page > article > div > div > div';
+  const createApplySelector =
+    'div > div > lib-top-bar > div > div > santa-button > button';
+  const letterCheckBoxSelector = 'alliance-apply-cover-letter';
+  const letterTextAriaSelector =
+    'alliance-apply-page > main > div > div > alliance-apply-cover-letter > textarea';
+  const applyButtonSelector =
+    'alliance-apply-action-buttons > div > santa-button-spinner > div > santa-button > button';
+
   let linksArray = lastData.slice();
-  let appliedVac = await isAppliedVacanciesExist(sended);
+  let appliedVac = await isDocumentExsist(sended, 'appliedVacancies.json');
 
   const browser = await puppeteer.launch({
     headless: false,
@@ -29,14 +39,9 @@ async function spamScriptRabotaUA(lastData) {
 
       await sleep(random);
 
-      await page.waitForSelector(
-        'div > div > lib-top-bar > div > div > santa-button > button',
-        { visible: true }
-      );
+      await page.waitForSelector(createApplySelector, { visible: true });
       await page.waitForSelector('body');
 
-      const mainVacancySelector =
-        'alliance-jobseeker-vacancy-page > article > div > div > div';
       const conditions = await checkVacancyRabotaUa(page, mainVacancySelector);
       const badConditions = await checkVacancyBadConditions(
         page,
@@ -45,31 +50,19 @@ async function spamScriptRabotaUA(lastData) {
       const backend = await checkVacancyRabotaUaBack(page, mainVacancySelector);
 
       if ((conditions && !badConditions) || (backend && !badConditions)) {
-        await page.click(
-          'div > div > lib-top-bar > div > div > santa-button > button'
-        );
+        await page.click(createApplySelector);
         await sleep(random);
 
-        await page.waitForSelector('alliance-apply-cover-letter');
+        await page.waitForSelector(letterCheckBoxSelector);
 
-        await page.click('alliance-apply-cover-letter');
+        await page.click(letterCheckBoxSelector);
 
-        await page.waitForSelector(
-          'alliance-apply-page > main > div > div > alliance-apply-cover-letter > textarea'
-        );
+        await page.waitForSelector(letterTextAriaSelector);
         const letter = letters.fullStackLetter;
-        await page.type(
-          'alliance-apply-page > main > div > div > alliance-apply-cover-letter > textarea',
-          letter
-        );
+        await page.type(letterTextAriaSelector, letter);
         await sleep(random);
-        await page.waitForSelector(
-          'alliance-apply-action-buttons > div > santa-button-spinner > div > santa-button > button',
-          { visible: true }
-        );
-        await page.click(
-          'alliance-apply-action-buttons > div > santa-button-spinner > div > santa-button > button'
-        );
+        await page.waitForSelector(applyButtonSelector, { visible: true });
+        await page.click(applyButtonSelector);
         await sleep(random);
         appliedVac.push(linksArray[i]);
 
