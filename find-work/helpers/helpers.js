@@ -21,8 +21,21 @@ async function scrollDown(page) {
 }
 
 async function getJobLinks(page, selector) {
-  let jobs = await page.evaluate(() =>
-    Array.from(document.querySelectorAll(selector)).map(a => a.href)
+  let jobs = await page.evaluate(selector => {
+    return Array.from(document.querySelectorAll(selector)).map(a => a.href);
+  }, selector);
+  return jobs;
+}
+
+async function getJobLinksFromField(page, fieldSelector, linkSelector) {
+  let jobs = await page.evaluate(
+    (fieldSelector, linkSelector) => {
+      const field = document.querySelector(fieldSelector);
+      if (!field) return [];
+      return Array.from(field.querySelectorAll(linkSelector)).map(a => a.href);
+    },
+    fieldSelector,
+    linkSelector
   );
   return jobs;
 }
@@ -70,12 +83,12 @@ async function checkVacancyConditions(page, sel, searchTerms, action = true) {
   return conditions;
 }
 
-async function checkVacancyWorkUa(page, sel) {
+async function checkVacancyWorkUaNFJ(page, sel) {
   const searchTerms = ['Дистанційна робота', 'React'];
   return await checkVacancyConditions(page, sel, searchTerms);
 }
 
-async function checkVacancyWorkUaBack(page, sel) {
+async function checkVacancyWorkUaBackNFJ(page, sel) {
   const searchTerms = ['Дистанційна робота', 'Node.js'];
   return await checkVacancyConditions(page, sel, searchTerms);
 }
@@ -92,21 +105,41 @@ async function checkVacancyRabotaUaBack(page, sel) {
 
 async function checkVacancyBadConditions(page, sel) {
   const searchTerms = [
-    'Senior',
     'Senior Front',
     'Senior Back',
     'Senior Full',
+    'Senior FrontEnd',
+    'Senior BackEnd',
+    'Senior FullStack',
+    'Senior Front-End',
+    'Senior Back-End',
+    'Senior Full-Stack',
+    'senior FrontEnd',
+    'senior BackEnd',
+    'senior FullStack',
+    'senior Front-End',
+    'senior Back-End',
+    'senior Full-Stack',
     '.NET',
     '(.NET',
     '(.NET/',
     'PHP',
     '(PHP',
     '(PHP/',
+    'React Native',
+    'React native',
+    'react native',
     'Team Lead',
     'Team Lead Front',
     'Team Lead Back',
     'Team Lead Full',
     'team lead',
+    'Team Lead FrontEnd',
+    'Team Lead BackEnd',
+    'Team Lead FullStack',
+    'Team Lead Front-End',
+    'Team Lead Back-End',
+    'Team Lead Full-Stack',
     'Python',
     'python',
     '(Python',
@@ -115,6 +148,12 @@ async function checkVacancyBadConditions(page, sel) {
     'angular',
     '(Angular',
     '(Angular/',
+    'WordPress',
+    'Wordpress',
+    '(Wordpress',
+    '(Wordpress/',
+    '(WordPress',
+    '(WordPress/',
   ];
   return await checkVacancyConditions(page, sel, searchTerms, false);
 }
@@ -139,11 +178,12 @@ module.exports = {
   scrollDown,
   getJobLinks,
   nextPage,
-  checkVacancyWorkUa,
+  checkVacancyWorkUaNFJ,
   getJobLinks,
   isDocumentExsist,
   checkVacancyRabotaUa,
-  checkVacancyWorkUaBack,
+  checkVacancyWorkUaBackNFJ,
   checkVacancyRabotaUaBack,
   checkVacancyBadConditions,
+  getJobLinksFromField,
 };

@@ -1,16 +1,15 @@
-const puppeteer = require('puppeteer');
 const fs = require('fs');
 const sended = require('../../../appliedVacancies.json');
 const letters = require('../../../letters/letters.json');
-const { sleep } = require('../../../utils');
+const { sleep, random, startBrowser } = require('../../../utils');
+// const { parseJobLinksNFJ } = require('../../nfj');
+// const find = require('../../jobLinks');
 const {
-  checkVacancyWorkUa,
+  checkVacancyWorkUaNFJ,
   isDocumentExsist,
-  checkVacancyWorkUaBack,
+  checkVacancyWorkUaBackNFJ,
   checkVacancyBadConditions,
 } = require('../../../helpers');
-
-//node ./scripts/workUa/spam/spam.js
 
 async function spamScriptWorkUa(links) {
   const mainVacancySelector =
@@ -27,26 +26,22 @@ async function spamScriptWorkUa(links) {
   let linksArray = links.slice();
   let appliedVac = await isDocumentExsist(sended, 'appliedVacancies.json');
 
-  const browser = await puppeteer.launch({
-    headless: false,
-    defaultViewport: false,
-    userDataDir: './tmp',
-  });
-  const page = await browser.newPage();
+  const { page, browser } = await startBrowser();
 
   for (let i = 0; i < linksArray.length; i++) {
     if (!appliedVac.includes(linksArray[i])) {
-      const random = Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000;
+      const time = random();
 
       await page.goto(linksArray[i]);
-
-      await sleep(random);
+      await sleep(time);
 
       await page.waitForSelector(createApplySelector, { visible: true });
-      await page.waitForSelector('body');
 
-      const conditions = await checkVacancyWorkUa(page, mainVacancySelector);
-      const backend = await checkVacancyWorkUaBack(page, mainVacancySelector);
+      const conditions = await checkVacancyWorkUaNFJ(page, mainVacancySelector);
+      const backend = await checkVacancyWorkUaBackNFJ(
+        page,
+        mainVacancySelector
+      );
       const badConditions = await checkVacancyBadConditions(
         page,
         mainVacancySelector
@@ -54,20 +49,20 @@ async function spamScriptWorkUa(links) {
 
       if ((conditions && !badConditions) || (backend && !badConditions)) {
         await page.click(createApplySelector);
-        await sleep(random);
+        await sleep(time);
 
-        await page.waitForSelector(choseCVSelector, { visible: true });
+        await page.waitForSelector(choseCVSelector);
         await page.click(choseCVSelector);
         await page.click(letterCheckBoxSelector);
 
         const letter = letters.fullStackLetter;
-
         await page.type(letterTextAriaSelector, letter);
+        await sleep(time);
 
-        await sleep(random);
-        await page.waitForSelector(applyButtonSelector, { visible: true });
+        await page.waitForSelector(applyButtonSelector);
         await page.click(applyButtonSelector);
-        await sleep(random);
+        await sleep(time);
+
         appliedVac.push(linksArray[i]);
 
         let uniqueData = Array.from(new Set(appliedVac));
@@ -77,6 +72,7 @@ async function spamScriptWorkUa(links) {
   }
 
   await browser.close();
+  // await parseJobLinksNFJ(find.jobLinksNFJ, 0);
 }
 
 module.exports = { spamScriptWorkUa };

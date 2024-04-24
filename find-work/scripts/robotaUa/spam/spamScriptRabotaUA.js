@@ -1,4 +1,3 @@
-const puppeteer = require('puppeteer');
 const fs = require('fs');
 const sended = require('../../../appliedVacancies.json');
 const letters = require('../../../letters/letters.json');
@@ -8,9 +7,9 @@ const {
   checkVacancyRabotaUaBack,
   checkVacancyBadConditions,
 } = require('../../../helpers');
-const { sleep } = require('../../../utils');
+const { sleep, random, startBrowser } = require('../../../utils');
 
-async function spamScriptRabotaUA(lastData) {
+async function spamScriptRobotaUA(lastData) {
   const mainVacancySelector =
     'alliance-jobseeker-vacancy-page > article > div > div > div';
   const createApplySelector =
@@ -24,23 +23,16 @@ async function spamScriptRabotaUA(lastData) {
   let linksArray = lastData.slice();
   let appliedVac = await isDocumentExsist(sended, 'appliedVacancies.json');
 
-  const browser = await puppeteer.launch({
-    headless: false,
-    defaultViewport: false,
-    userDataDir: './tmp',
-  });
-  const page = await browser.newPage();
+  const { page, browser } = await startBrowser();
 
   for (let i = 0; i < linksArray.length; i++) {
     if (!appliedVac.includes(linksArray[i])) {
-      const random = Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000;
+      const time = random();
 
       await page.goto(linksArray[i]);
-
-      await sleep(random);
+      await sleep(time);
 
       await page.waitForSelector(createApplySelector, { visible: true });
-      await page.waitForSelector('body');
 
       const conditions = await checkVacancyRabotaUa(page, mainVacancySelector);
       const badConditions = await checkVacancyBadConditions(
@@ -51,19 +43,20 @@ async function spamScriptRabotaUA(lastData) {
 
       if ((conditions && !badConditions) || (backend && !badConditions)) {
         await page.click(createApplySelector);
-        await sleep(random);
+        await sleep(time);
 
         await page.waitForSelector(letterCheckBoxSelector);
-
         await page.click(letterCheckBoxSelector);
-
         await page.waitForSelector(letterTextAriaSelector);
+
         const letter = letters.fullStackLetter;
         await page.type(letterTextAriaSelector, letter);
-        await sleep(random);
-        await page.waitForSelector(applyButtonSelector, { visible: true });
+        await sleep(time);
+
+        await page.waitForSelector(applyButtonSelector);
         await page.click(applyButtonSelector);
-        await sleep(random);
+        await sleep(time);
+
         appliedVac.push(linksArray[i]);
 
         let uniqueData = Array.from(new Set(appliedVac));
@@ -75,4 +68,4 @@ async function spamScriptRabotaUA(lastData) {
   await browser.close();
 }
 
-module.exports = { spamScriptRabotaUA };
+module.exports = { spamScriptRobotaUA };
