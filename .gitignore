@@ -24,10 +24,10 @@ yarn-error.log*
 
 
 .DS_Store
-searchResultRobotaUa.json
-searchResultWorkUa.json
-appliedVacancies.json
-searchResultNFJ.json
+# searchResultRobotaUa.json
+# searchResultWorkUa.json
+# appliedVacancies.json
+# searchResultNFJ.json
 .prettierrc.json
 package-lock.json
 node_modules
