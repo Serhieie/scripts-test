@@ -2,11 +2,12 @@ const fs = require('fs');
 const { scrollDown, getJobLinksFromField } = require('../../../helpers');
 const { spamScriptNFJ } = require('../spam/spamScriptNFJ');
 const { startBrowser } = require('../../../utils');
+const selectors = require('../../selectors.json');
+const nfjSelectors = selectors.nfj;
 
 async function parseJobLinksNFJ(links, index) {
-  const fieldToSearch =
-    'nfj-postings-search > div > div > common-main-loader > div > nfj-search-results > nfj-postings-list > div.list-container.ng-star-inserted';
-  const jobLinksSelector = 'div.list-container.ng-star-inserted > a';
+  const fieldToSearch = nfjSelectors.fieldToSearch;
+  const jobLinksSelector = nfjSelectors.jobLinksSelector;
 
   if (index >= links.length) {
     console.log('All links processed at NFJ.');

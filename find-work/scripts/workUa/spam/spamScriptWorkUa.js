@@ -2,26 +2,23 @@ const fs = require('fs');
 const sended = require('../../../appliedVacancies.json');
 const letters = require('../../../letters/letters.json');
 const { sleep, random, startBrowser } = require('../../../utils');
-// const { parseJobLinksNFJ } = require('../../nfj');
-// const find = require('../../jobLinks');
 const {
   checkVacancyWorkUaNFJ,
   isDocumentExsist,
   checkVacancyWorkUaBackNFJ,
   checkVacancyBadConditions,
 } = require('../../../helpers');
+const selectors = require('../../selectors.json');
+
+const workUaSelectors = selectors.workUa;
 
 async function spamScriptWorkUa(links) {
-  const mainVacancySelector =
-    '#center > div > div.row.row-print > div.col-md-8 > div.card.card-spell-wrapper > div:nth-child(2)';
-  const createApplySelector =
-    'div > div > div > div > div > div.pull-left > div > div > a';
-  const choseCVSelector =
-    '#savedresume > div:nth-child(2) > div:nth-child(3) > label';
-  const letterCheckBoxSelector =
-    '#commonresume > div:nth-child(1) > div > label';
-  const letterTextAriaSelector = '#addtext';
-  const applyButtonSelector = '#submitbtn';
+  const mainVacancySelector = workUaSelectors.mainVacancySelector;
+  const createApplySelector = workUaSelectors.createApplySelector;
+  const choseCVSelector = workUaSelectors.choseCVSelector;
+  const letterCheckBoxSelector = workUaSelectors.letterCheckBoxSelector;
+  const letterTextAriaSelector = workUaSelectors.letterTextAriaSelector;
+  const applyButtonSelector = workUaSelectors.applyButtonSelector;
 
   let linksArray = links.slice();
   let appliedVac = await isDocumentExsist(sended, 'appliedVacancies.json');
@@ -72,7 +69,6 @@ async function spamScriptWorkUa(links) {
   }
 
   await browser.close();
-  // await parseJobLinksNFJ(find.jobLinksNFJ, 0);
 }
 
 module.exports = { spamScriptWorkUa };

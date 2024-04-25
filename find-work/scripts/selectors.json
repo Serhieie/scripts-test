@@ -1,0 +1,46 @@
+{
+  "robotaUa": {
+    "links": [
+      "https://robota.ua/zapros/junior-front-end/ukraine",
+      "https://robota.ua/zapros/junior-back-end/ukraine",
+      "https://robota.ua/zapros/junior-full-stack/ukraine"
+    ],
+    "jobLinkSelector": "alliance-jobseeker-desktop-vacancies-list > div > div > alliance-vacancy-card-desktop > a",
+    "paginationSelector": "santa-pagination-with-links > div > a",
+    "mainVacancySelector": "alliance-jobseeker-vacancy-page > article > div > div > div",
+    "createApplySelector": "div > div > lib-top-bar > div > div > santa-button > button",
+    "letterCheckBoxSelector": "alliance-apply-cover-letter",
+    "letterTextAriaSelector": "alliance-apply-page > main > div > div > alliance-apply-cover-letter > textarea",
+    "applyButtonSelector": "alliance-apply-action-buttons > div > santa-button-spinner > div > santa-button > button"
+  },
+  "workUa": {
+    "links": [
+      "https://www.work.ua/jobs-junior+back+end/",
+      "https://www.work.ua/jobs-junior+front+end/",
+      "https://www.work.ua/jobs-junior+full+stack/"
+    ],
+    "jobLinksSelector": "#pjax-jobs-list > .card-search div.add-bottom > h2 > a",
+    "paginationSelector": "ul.pagination.text-center > li",
+    "mainVacancySelector": "#center > div > div.row.row-print > div.col-md-8 > div.card.card-spell-wrapper > div:nth-child(2)",
+    "createApplySelector": "div > div > div > div > div > div.pull-left > div > div > a",
+    "choseCVSelector": "#savedresume > div:nth-child(2) > div:nth-child(3) > label",
+    "letterCheckBoxSelector": "#commonresume > div:nth-child(1) > div > label",
+    "letterTextAriaSelector": "#addtext",
+    "applyButtonSelector": "#submitbtn"
+  },
+  "nfj": {
+    "links": [
+      "https://nofluffjobs.com/ua/viddalena-robota/fullstack?criteria=requirement%3DJavaScript%20category%3Dbackend,frontend%20seniority%3Dtrainee,junior"
+    ],
+    "fieldToSearch": "nfj-postings-search > div > div > common-main-loader > div > nfj-search-results > nfj-postings-list > div.list-container.ng-star-inserted",
+    "jobLinksSelector": "div.list-container.ng-star-inserted > a",
+    "mainVacancySelector": "div.border.ng-star-inserted",
+    "createApplySelector": "#applyButton",
+    "languageSelector": "nfj-apply-known-languages > nfj-checkbox",
+    "optionalSelectors": "nfj-apply-internal-step-application > form > nfj-apply-optional > div",
+    "letterTextAriaSelector": "div > textarea",
+    "saveOptionalSelector": "button.tw-btn.tw-btn-primary.tw-btn-lg.tw-truncate",
+    "optionalInputsSelector": "common-material-modal > div.dialog-body > section > nfj-form-field > div > div > input",
+    "applyButtonSelector": "#sendApplicationButton > button"
+  }
+}

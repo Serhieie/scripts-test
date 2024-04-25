@@ -8,17 +8,16 @@ const {
   checkVacancyBadConditions,
 } = require('../../../helpers');
 const { sleep, random, startBrowser } = require('../../../utils');
+const selectors = require('../../selectors.json');
+
+const robotaUaSelectors = selectors.robotaUa;
 
 async function spamScriptRobotaUA(lastData) {
-  const mainVacancySelector =
-    'alliance-jobseeker-vacancy-page > article > div > div > div';
-  const createApplySelector =
-    'div > div > lib-top-bar > div > div > santa-button > button';
-  const letterCheckBoxSelector = 'alliance-apply-cover-letter';
-  const letterTextAriaSelector =
-    'alliance-apply-page > main > div > div > alliance-apply-cover-letter > textarea';
-  const applyButtonSelector =
-    'alliance-apply-action-buttons > div > santa-button-spinner > div > santa-button > button';
+  const mainVacancySelector = robotaUaSelectors.mainVacancySelector;
+  const createApplySelector = robotaUaSelectors.createApplySelector;
+  const letterCheckBoxSelector = robotaUaSelectors.letterCheckBoxSelector;
+  const letterTextAriaSelector = robotaUaSelectors.letterTextAriaSelector;
+  const applyButtonSelector = robotaUaSelectors.applyButtonSelector;
 
   let linksArray = lastData.slice();
   let appliedVac = await isDocumentExsist(sended, 'appliedVacancies.json');

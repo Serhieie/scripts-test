@@ -10,21 +10,20 @@ const {
   checkVacancyBadConditions,
 } = require('../../../helpers');
 require('dotenv').config();
+const selectors = require('../../selectors.json');
 
+const nfjSelectors = selectors.nfj;
 const { LINKEDIN, GITHUB } = process.env;
 
 async function spamScriptNFJ(links) {
-  const mainVacancySelector = 'div.border.ng-star-inserted';
-  const createApplySelector = '#applyButton';
-  const languageSelector = 'nfj-apply-known-languages > nfj-checkbox';
-  const optionalSelectors =
-    'nfj-apply-internal-step-application > form > nfj-apply-optional > div';
-  const letterTextAriaSelector = 'div > textarea';
-  const saveOptionalSelector =
-    'button.tw-btn.tw-btn-primary.tw-btn-lg.tw-truncate';
-  const optionalInputsSelector =
-    'common-material-modal > div.dialog-body > section > nfj-form-field > div > div > input';
-  const applyButtonSelector = '#sendApplicationButton > button';
+  const mainVacancySelector = nfjSelectors.mainVacancySelector;
+  const createApplySelector = nfjSelectors.createApplySelector;
+  const languageSelector = nfjSelectors.languageSelector;
+  const optionalSelectors = nfjSelectors.optionalSelectors;
+  const letterTextAriaSelector = nfjSelectors.letterTextAriaSelector;
+  const saveOptionalSelector = nfjSelectors.saveOptionalSelector;
+  const optionalInputsSelector = nfjSelectors.optionalInputsSelector;
+  const applyButtonSelector = nfjSelectors.applyButtonSelector;
 
   let linksArray = links.slice();
   let appliedVac = await isDocumentExsist(sended, 'appliedVacancies.json');
@@ -55,24 +54,26 @@ async function spamScriptNFJ(links) {
         await sleep(time);
 
         await page.waitForSelector(languageSelector);
-        if (languageSelector) {
-          await page.click(languageSelector);
+        const languageElement = await page.$(languageSelector);
+        if (languageElement) {
+          await languageElement.click();
         }
+        await sleep(time);
 
         const optionalElements = await page.$$(optionalSelectors);
-        for (const i = 0; i < optionalElements.length; i++) {
-          if (i === 0) {
-            await optionalElements[i].click();
+        for (const j = 0; j < optionalElements.length; j++) {
+          if (j === 0) {
+            await optionalElements[j].click();
             const letter = letters.fullStackLetter;
             await page.type(letterTextAriaSelector, letter);
             await page.click(saveOptionalSelector);
-          } else if (i === 1) {
-            await optionalElements[i].click();
+          } else if (j === 1) {
+            await optionalElements[j].click();
             const linkedin = LINKEDIN;
             await page.type(optionalInputsSelector, linkedin);
             await page.click(saveOptionalSelector);
-          } else if (i === 2) {
-            await optionalElements[i].click();
+          } else if (j === 2) {
+            await optionalElements[j].click();
             const github = GITHUB;
             await page.type(optionalInputsSelector, github);
             await page.click(saveOptionalSelector);

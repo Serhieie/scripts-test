@@ -2,11 +2,13 @@ const fs = require('fs');
 const { scrollDown, getJobLinks, nextPage } = require('../../../helpers');
 const { spamScriptWorkUa } = require('../spam/spamScriptWorkUa');
 const { startBrowser } = require('../../../utils');
+const selectors = require('../../selectors.json');
+
+const workUaSelectors = selectors.workUa;
 
 async function parseJobLinksWorkUa(links, index) {
-  const jobLinksSelector =
-    '#pjax-jobs-list > .card-search div.add-bottom > h2 > a';
-  const paginationSelector = 'ul.pagination.text-center > li';
+  const jobLinksSelector = workUaSelectors.jobLinksSelector;
+  const paginationSelector = workUaSelectors.paginationSelector;
 
   if (index >= links.length) {
     console.log('All links processed at workUa.');

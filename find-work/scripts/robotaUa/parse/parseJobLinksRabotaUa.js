@@ -2,11 +2,14 @@ const fs = require('fs');
 const { scrollDown, getJobLinks } = require('../../../helpers');
 const { spamScriptRobotaUA } = require('../spam/spamScriptRabotaUA');
 const { startBrowser } = require('../../../utils');
+const selectors = require('../../selectors.json');
+
+const robotaUaSelectors = selectors.robotaUa;
 
 async function parseJobLinksRabotaUa(links, index) {
-  const jobLinkSelector =
-    'alliance-jobseeker-desktop-vacancies-list > div > div > alliance-vacancy-card-desktop > a';
-  const paginationSelector = 'santa-pagination-with-links > div > a';
+  const jobLinkSelector = robotaUaSelectors.jobLinkSelector;
+  const paginationSelector = robotaUaSelectors.paginationSelector;
+
   if (index >= links.length) {
     console.log('All links processed at RabotaUa.');
     let lastData = JSON.parse(fs.readFileSync('searchResultRobotaUa.json'));
