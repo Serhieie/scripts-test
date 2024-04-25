@@ -1,6 +1,6 @@
 import { Button } from 'antd';
 import axios from 'axios';
-const url = 'https://scripts-test.onrender.com';
+const url = 'https://scripts-test.onrender.com/api/catch-me-work';
 
 function App() {
   const start = async () => {
