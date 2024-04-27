@@ -174,6 +174,17 @@ async function isDocumentExsist(searchResult, docName) {
   return linksArray;
 }
 
+function writeLinks(vacancies) {
+  let existingData = JSON.parse(fs.readFileSync('searchResult.json'));
+  let newData = existingData.concat(vacancies);
+  fs.writeFileSync('searchResult.json', JSON.stringify(newData));
+}
+
+function finalMessage(arr) {
+  if (!arr.length) console.log('This time no vacancies to apply.');
+  else console.log(`Success! ===> At this try ${arr.length} jobs was applied.`);
+}
+
 module.exports = {
   scrollDown,
   getJobLinks,
@@ -186,4 +197,6 @@ module.exports = {
   checkVacancyRabotaUaBack,
   checkVacancyBadConditions,
   getJobLinksFromField,
+  finalMessage,
+  writeLinks,
 };

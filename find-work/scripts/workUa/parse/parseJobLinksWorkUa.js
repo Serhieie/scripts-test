@@ -1,5 +1,10 @@
 const fs = require('fs');
-const { scrollDown, getJobLinks, nextPage } = require('../../../helpers');
+const {
+  scrollDown,
+  getJobLinks,
+  nextPage,
+  writeLinks,
+} = require('../../../helpers');
 const { spamScriptWorkUa } = require('../spam/spamScriptWorkUa');
 const { startBrowser } = require('../../../utils');
 const selectors = require('../../selectors.json');
@@ -12,7 +17,7 @@ async function parseJobLinksWorkUa(links, index) {
 
   if (index >= links.length) {
     console.log('All links processed at workUa.');
-    let lastData = JSON.parse(fs.readFileSync('searchResultWorkUa.json'));
+    let lastData = JSON.parse(fs.readFileSync('searchResult.json'));
     await spamScriptWorkUa(lastData);
     return;
   }
@@ -35,11 +40,10 @@ async function parseJobLinksWorkUa(links, index) {
 
     let nextVacancies = await getJobLinks(page, jobLinksSelector);
     vacancies = vacancies.concat(nextVacancies);
+    lastData = vacancies;
   }
 
-  let existingData = JSON.parse(fs.readFileSync('searchResultWorkUa.json'));
-  let newData = existingData.concat(vacancies);
-  fs.writeFileSync('searchResultWorkUa.json', JSON.stringify(newData));
+  writeLinks(vacancies);
 
   await browser.close();
   await parseJobLinksWorkUa(links, index + 1);

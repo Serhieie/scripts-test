@@ -8,6 +8,7 @@ const {
   isDocumentExsist,
   checkVacancyWorkUaBackNFJ,
   checkVacancyBadConditions,
+  finalMessage,
 } = require('../../../helpers');
 require('dotenv').config();
 const selectors = require('../../selectors.json');
@@ -16,6 +17,9 @@ const nfjSelectors = selectors.nfj;
 const { LINKEDIN, GITHUB } = process.env;
 
 async function spamScriptNFJ(links) {
+  console.log(`Was founded ${links.length} links.`);
+
+  const appliedVacanciesAtThisRound = [];
   const mainVacancySelector = nfjSelectors.mainVacancySelector;
   const createApplySelector = nfjSelectors.createApplySelector;
   const languageSelector = nfjSelectors.languageSelector;
@@ -86,6 +90,7 @@ async function spamScriptNFJ(links) {
         await sleep(time);
 
         appliedVac.push(linksArray[i]);
+        appliedVacanciesAtThisRound.push(linksArray[i]);
 
         let uniqueData = Array.from(new Set(appliedVac));
         fs.writeFileSync('appliedVacancies.json', JSON.stringify(uniqueData));
@@ -93,7 +98,10 @@ async function spamScriptNFJ(links) {
     }
   }
 
+  finalMessage(appliedVacanciesAtThisRound);
   await browser.close();
+
+  fs.writeFileSync('searchResult.json', '[]');
 }
 
 module.exports = { spamScriptNFJ };

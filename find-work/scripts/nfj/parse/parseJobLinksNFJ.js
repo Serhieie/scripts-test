@@ -1,5 +1,9 @@
 const fs = require('fs');
-const { scrollDown, getJobLinksFromField } = require('../../../helpers');
+const {
+  scrollDown,
+  getJobLinksFromField,
+  writeLinks,
+} = require('../../../helpers');
 const { spamScriptNFJ } = require('../spam/spamScriptNFJ');
 const { startBrowser } = require('../../../utils');
 const selectors = require('../../selectors.json');
@@ -11,7 +15,7 @@ async function parseJobLinksNFJ(links, index) {
 
   if (index >= links.length) {
     console.log('All links processed at NFJ.');
-    let lastData = JSON.parse(fs.readFileSync('searchResultNFJ.json'));
+    let lastData = JSON.parse(fs.readFileSync('searchResult.json'));
     await spamScriptNFJ(lastData);
     return;
   }
@@ -28,9 +32,7 @@ async function parseJobLinksNFJ(links, index) {
     jobLinksSelector
   );
 
-  let existingData = JSON.parse(fs.readFileSync('searchResultNFJ.json'));
-  let newData = existingData.concat(vacancies);
-  fs.writeFileSync('searchResultNFJ.json', JSON.stringify(newData));
+  writeLinks(vacancies);
 
   await browser.close();
   await parseJobLinksNFJ(links, index + 1);

@@ -6,6 +6,7 @@ const {
   isDocumentExsist,
   checkVacancyRabotaUaBack,
   checkVacancyBadConditions,
+  finalMessage,
 } = require('../../../helpers');
 const { sleep, random, startBrowser } = require('../../../utils');
 const selectors = require('../../selectors.json');
@@ -13,6 +14,9 @@ const selectors = require('../../selectors.json');
 const robotaUaSelectors = selectors.robotaUa;
 
 async function spamScriptRobotaUA(lastData) {
+  console.log(`Was founded ${lastData.length} links.`);
+
+  const appliedVacanciesAtThisRound = [];
   const mainVacancySelector = robotaUaSelectors.mainVacancySelector;
   const createApplySelector = robotaUaSelectors.createApplySelector;
   const letterCheckBoxSelector = robotaUaSelectors.letterCheckBoxSelector;
@@ -57,6 +61,7 @@ async function spamScriptRobotaUA(lastData) {
         await sleep(time);
 
         appliedVac.push(linksArray[i]);
+        appliedVacanciesAtThisRound.push(linksArray[i]);
 
         let uniqueData = Array.from(new Set(appliedVac));
         fs.writeFileSync('appliedVacancies.json', JSON.stringify(uniqueData));
@@ -64,7 +69,10 @@ async function spamScriptRobotaUA(lastData) {
     }
   }
 
+  finalMessage(appliedVacanciesAtThisRound);
   await browser.close();
+
+  fs.writeFileSync('searchResult.json', '[]');
 }
 
 module.exports = { spamScriptRobotaUA };

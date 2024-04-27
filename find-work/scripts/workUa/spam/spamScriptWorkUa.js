@@ -7,12 +7,16 @@ const {
   isDocumentExsist,
   checkVacancyWorkUaBackNFJ,
   checkVacancyBadConditions,
+  finalMessage,
 } = require('../../../helpers');
 const selectors = require('../../selectors.json');
 
 const workUaSelectors = selectors.workUa;
 
 async function spamScriptWorkUa(links) {
+  console.log(`Was founded ${links.length} links.`);
+
+  const appliedVacanciesAtThisRound = [];
   const mainVacancySelector = workUaSelectors.mainVacancySelector;
   const createApplySelector = workUaSelectors.createApplySelector;
   const choseCVSelector = workUaSelectors.choseCVSelector;
@@ -61,6 +65,7 @@ async function spamScriptWorkUa(links) {
         await sleep(time);
 
         appliedVac.push(linksArray[i]);
+        appliedVacanciesAtThisRound.push(linksArray[i]);
 
         let uniqueData = Array.from(new Set(appliedVac));
         fs.writeFileSync('appliedVacancies.json', JSON.stringify(uniqueData));
@@ -68,7 +73,10 @@ async function spamScriptWorkUa(links) {
     }
   }
 
+  finalMessage(appliedVacanciesAtThisRound);
   await browser.close();
+
+  fs.writeFileSync('searchResult.json', '[]');
 }
 
 module.exports = { spamScriptWorkUa };
