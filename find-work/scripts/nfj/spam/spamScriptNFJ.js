@@ -65,7 +65,7 @@ async function spamScriptNFJ(links) {
         await sleep(time);
 
         const optionalElements = await page.$$(optionalSelectors);
-        for (const j = 0; j < optionalElements.length; j++) {
+        for (let j = 0; j < optionalElements.length; j++) {
           if (j === 0) {
             await optionalElements[j].click();
             const letter = letters.fullStackLetter;

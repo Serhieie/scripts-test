@@ -40,7 +40,6 @@ async function parseJobLinksWorkUa(links, index) {
 
     let nextVacancies = await getJobLinks(page, jobLinksSelector);
     vacancies = vacancies.concat(nextVacancies);
-    lastData = vacancies;
   }
 
   writeLinks(vacancies);

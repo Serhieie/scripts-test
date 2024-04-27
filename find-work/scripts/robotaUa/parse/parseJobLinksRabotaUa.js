@@ -37,7 +37,6 @@ async function parseJobLinksRabotaUa(links, index) {
     await scrollDown(page);
     let nextVacancies = await getJobLinks(page, jobLinkSelector);
     vacancies = vacancies.concat(nextVacancies);
-    lastData = vacancies;
   }
 
   writeLinks(vacancies);
